@@ -1,28 +1,35 @@
 # V2G Agent Network
 
-A minimal multi-agent simulation in which three AI agents from different
-organizations negotiate where to pre-position idle electric bus batteries
-(vehicle-to-grid) near vulnerable Boston neighborhoods ahead of a storm.
+## What this is
 
-## What it does
+Three AI agents from different organizations — city emergency management, the
+transit authority, and the electric utility — negotiate where to pre-position
+idle electric bus batteries (vehicle-to-grid) near vulnerable Boston
+neighborhoods ahead of a storm. Each agent is a role-prompted call to
+`claude-sonnet-4-6` with forced tool use, and an orchestrator runs up to four
+rounds of propose → allocate → validate until the utility approves a plan.
 
-- **EmergencyAgent** (city emergency management) reads the storm forecast and
-  neighborhood data, and proposes priority zones ranked by social vulnerability
-  x outage risk.
-- **FleetAgent** (transit authority) assigns specific buses given state of
-  charge and route status, and pushes back if a proposal would strand service
-  or use low-charge buses.
-- **UtilityAgent** (grid operator) checks each staging site against its grid
-  tie-in capacity and rejects allocations that exceed it, stating a per-site
-  bus limit.
+## What the first run taught me
 
-The orchestrator runs up to 4 negotiation rounds, printing a round-by-round
-trace, and stops when the utility approves. The synthetic data is designed so
-at least one rejection happens (East Boston is top priority but its 100 kW
-tie-in fits only one 60 kW bus). The final plan is written to
-`output/staging_plan.json`.
+The negotiation dynamics worked immediately — the utility correctly rejected a
+120 kW allocation against East Boston's 100 kW tie-in in round one. What broke
+was subtler: when the fleet agent ran out of eligible buses for the
+lower-priority zones, it started **inventing bus IDs** (BEB-13 through BEB-21,
+which don't exist) and **double-booking real buses** to multiple neighborhoods
+rather than admitting it couldn't cover every zone. The plan never converged.
 
-## How to run
+A prompt rule ("one zone per bus, real IDs only, leave zones unserved and say
+so") mostly fixed the fleet agent — but on the next run the **utility agent
+approved a plan containing a duplicate** it had caught and rejected in earlier
+rounds. An LLM validator is a probabilistic check, and it missed the same bug
+it had previously flagged.
+
+The durable fix was a deterministic dedupe guard in the orchestrator that
+drops repeat bus assignments before validation. The lesson: the constraint
+moved from the model into the environment. Prompts shape behavior; code
+guarantees invariants.
+
+## How to run it
 
 ```powershell
 python -m venv .venv
@@ -32,20 +39,24 @@ pip install anthropic python-dotenv
 python orchestrator.py
 ```
 
-All agent calls use `claude-sonnet-4-6` via the Anthropic Messages API with
-forced tool use, so every decision comes back as structured JSON.
+The round-by-round trace prints to the console; the final plan is written to
+`output/staging_plan.json`.
 
 ## Architecture (five lines)
 
 1. `data/` holds synthetic JSON: neighborhoods, fleet, and one storm forecast.
 2. Each agent in `agents/` is a class with a role system prompt and one decision tool; `tool_choice` forces a structured response.
 3. `orchestrator.py` loops: Emergency proposes -> Fleet allocates -> Utility validates.
-4. Rejections are serialized and fed back into the next round's prompts.
+4. Rejections are serialized and fed back into the next round's prompts, and a deterministic guard drops duplicate bus assignments.
 5. On approval (or round limit) the orchestrator computes kWh and coverage in plain Python and writes `output/staging_plan.json`.
 
-## Known limitations
+## Known limitations and what I'd build next
 
-- Agents are stateless between rounds; feedback is passed as text, not conversation history.
-- The utility's capacity arithmetic is done by the model, not verified in code (a real system would recheck deterministically). The orchestrator does deterministically drop duplicate bus assignments, since the models occasionally double-assign a bus.
-- No travel time, charging logistics, weather uncertainty, or cost modeling; data is synthetic and small.
-- Convergence within 4 rounds is likely but not guaranteed; on failure the last (unapproved) allocation is written with a warning.
+- Agents are stateless between rounds; feedback is passed as text, not conversation history. Next: give each agent a running conversation so it remembers its own commitments.
+- The utility's capacity arithmetic is done by the model; only the duplicate check is enforced in code. Next: recheck kW-vs-tie-in deterministically and let the model handle judgment calls only.
+- No travel time, charging logistics, weather uncertainty, or cost modeling; data is synthetic and small. Next: real MBTA depot locations and a proper dispatch cost function.
+- Convergence within 4 rounds is likely but not guaranteed; on failure the last unapproved allocation is written with a warning.
+
+---
+
+Built with Claude Code in one evening; the scenario design and findings are mine.
