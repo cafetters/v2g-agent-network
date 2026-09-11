@@ -47,11 +47,14 @@ class UtilityAgent(BaseAgent):
         "carefully; do not approve out of politeness."
     )
 
-    def validate(self, allocation: dict, neighborhoods: list, fleet: list) -> dict:
+    def __init__(self, neighborhoods: list, fleet: list):
+        super().__init__(
+            f"Neighborhood grid tie-in capacities:\n{json.dumps(neighborhoods)}\n\n"
+            f"Bus export ratings:\n{json.dumps(fleet)}")
+
+    def validate(self, allocation: dict) -> dict:
         content = (
             f"Proposed allocation:\n{json.dumps(allocation)}\n\n"
-            f"Neighborhood grid tie-in capacities:\n{json.dumps(neighborhoods)}\n\n"
-            f"Bus export ratings:\n{json.dumps(fleet)}\n\n"
             "Validate the plan against grid tie-in capacity."
         )
         return self.call_tool(content, VALIDATE_TOOL)

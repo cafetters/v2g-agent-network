@@ -114,14 +114,14 @@ def negotiate(agents, data, proposer, log):
             print(f"\n=== Round {rnd} ===")
 
         if proposer == "emergency":
-            proposal = emergency.propose(forecast, neighborhoods, feedback)
+            proposal = emergency.propose(feedback)
             zones = ", ".join(z["neighborhood"] for z in proposal["priority_zones"])
             emit(log, rnd, emergency.name, f"proposed priority zones: {zones}",
                  proposal["summary"], {"feedback": feedback}, proposal)
-            allocation = fleet_agent.allocate(fleet, proposal, feedback)
+            allocation = fleet_agent.allocate(proposal, feedback)
         else:  # fleet proposes first; Emergency reviews afterwards
             context = {"forecast": forecast, "neighborhoods": fleet_view}
-            allocation = fleet_agent.allocate(fleet, context, feedback)
+            allocation = fleet_agent.allocate(context, feedback)
 
         allocation, guards = apply_guards(allocation, forced_caps,
                                           valid_buses, valid_hoods)
@@ -136,7 +136,7 @@ def negotiate(agents, data, proposer, log):
 
         review = None
         if proposer == "fleet":
-            review = emergency.propose(forecast, neighborhoods, json.dumps({
+            review = emergency.propose(json.dumps({
                 "fleet_allocation": allocation["assignments"],
                 "utility_rejections": (last or {}).get("rejections", []),
             }))
@@ -145,7 +145,7 @@ def negotiate(agents, data, proposer, log):
                  f"reviewed allocation; vulnerability ranking: {zones}",
                  review["summary"], {"allocation": allocation["assignments"]}, review)
 
-        verdict = utility.validate(allocation, neighborhoods, fleet)
+        verdict = utility.validate(allocation)
         violations = compute_violations(allocation, neighborhoods, fleet)
         approved = not violations
         if approved != verdict["approved"]:
@@ -244,6 +244,13 @@ def summarize_lines(results, neighborhoods, title):
                 if n_app else "n/a"),
              f"verdict disagreements (model vs computed): "
              f"{sum(r.get('verdict_disagreements', 0) for r in results)}"]
+    tok = {k: sum(r.get("tokens", {}).get(k, 0) for r in results)
+           for k in ("input", "output", "cache_read", "cache_write")}
+    cost = (tok["input"] * 3 + tok["output"] * 15
+            + tok["cache_read"] * 0.30 + tok["cache_write"] * 3.75) / 1e6
+    lines.append(f"tokens: {tok['input']} uncached-in / {tok['cache_write']} "
+                 f"cache-write / {tok['cache_read']} cache-read / "
+                 f"{tok['output']} out | est cost ${cost:.2f}")
     if not n_app:
         lines.append("No approved runs; skipping per-neighborhood table.")
         return lines
@@ -286,34 +293,39 @@ def replay(path: str):
 
 
 def run_batch(runs, proposer, agents, data, stamp):
+    from agents.base import BaseAgent
     neighborhoods, fleet, forecast = data
     results, plan = [], None
     for i in range(runs):
         run_id = f"{stamp}-{proposer}-run{i + 1:02d}"
         log = RunLog(os.path.join("logs", run_id + ".jsonl"), run_id)
+        before = dict(BaseAgent.TOKENS)
         try:
             (allocation, rounds, approved, rejected_r1, verdict,
              disagreements) = negotiate(agents, data, proposer, log)
         finally:
             log.close()
+        tokens = {k: BaseAgent.TOKENS[k] - before[k] for k in before}
         plan = build_plan(
             allocation, neighborhoods, fleet, forecast, rounds,
             "approved" if approved else "unapproved",
             None if approved else verdict)
         results.append({
             "rounds": rounds, "approved": approved, "rejected_r1": rejected_r1,
-            "verdict_disagreements": disagreements,
+            "verdict_disagreements": disagreements, "tokens": tokens,
             "total_kwh": plan["total_kwh_staged"],
             "per_hood": {s["neighborhood"]: {
                 "kwh": s["kwh_available"], "covered": s["critical_residents_covered"],
                 "buses": len(s["buses"])} for s in plan["staging"]},
         })
-        if runs > 1 or not VERBOSE:
-            print(f"[{proposer}] run {i + 1}/{runs}: "
-                  f"{'approved' if approved else 'UNAPPROVED'} in {rounds} round(s), "
-                  f"{plan['total_kwh_staged']} kWh staged, "
-                  f"{disagreements} verdict disagreement(s)")
-        elif not approved:
+        total_in = tokens["input"] + tokens["cache_read"] + tokens["cache_write"]
+        print(f"[{proposer}] run {i + 1}/{runs}: "
+              f"{'approved' if approved else 'UNAPPROVED'} in {rounds} round(s), "
+              f"{plan['total_kwh_staged']} kWh staged, "
+              f"{disagreements} verdict disagreement(s), "
+              f"tokens {total_in} in ({tokens['cache_read']} cached) / "
+              f"{tokens['output']} out")
+        if runs == 1 and VERBOSE and not approved:
             print(f"\nNo approval after {MAX_ROUNDS} rounds; writing plan "
                   f"with status=unapproved and the last rejection attached.")
     return results, plan
@@ -339,7 +351,8 @@ def main():
 
     VERBOSE = args.runs == 1 and args.proposer != "both"
     data = (load("neighborhoods.json"), load("fleet.json"), load("forecast.json"))
-    agents = (EmergencyAgent(), FleetAgent(), UtilityAgent())
+    agents = (EmergencyAgent(data[2], data[0]), FleetAgent(data[1]),
+              UtilityAgent(data[0], data[1]))
     os.makedirs("logs", exist_ok=True)
     os.makedirs("output", exist_ok=True)
     stamp = datetime.now().strftime("%Y%m%d-%H%M%S")

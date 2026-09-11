@@ -52,9 +52,11 @@ class FleetAgent(BaseAgent):
         "leave the lowest-priority zones unserved and say so in objections."
     )
 
-    def allocate(self, fleet: list, context: dict, feedback: str | None) -> dict:
+    def __init__(self, fleet: list):
+        super().__init__(f"Fleet status:\n{json.dumps(fleet)}")
+
+    def allocate(self, context: dict, feedback: str | None) -> dict:
         content = (
-            f"Fleet status:\n{json.dumps(fleet)}\n\n"
             f"Staging context:\n{json.dumps(context)}\n\n"
             + (f"Feedback from last round:\n{feedback}\n\n" if feedback else "")
             + "Propose a bus-to-neighborhood allocation."

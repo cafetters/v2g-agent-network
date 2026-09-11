@@ -43,11 +43,14 @@ class EmergencyAgent(BaseAgent):
         "only where their reasons genuinely warrant it."
     )
 
-    def propose(self, forecast: dict, neighborhoods: list, feedback: str | None) -> dict:
-        content = (
+    def __init__(self, forecast: dict, neighborhoods: list):
+        super().__init__(
             f"Storm forecast:\n{json.dumps(forecast)}\n\n"
-            f"Neighborhoods:\n{json.dumps(neighborhoods)}\n\n"
-            + (f"Feedback from last round:\n{feedback}\n\n" if feedback else "")
+            f"Neighborhoods:\n{json.dumps(neighborhoods)}")
+
+    def propose(self, feedback: str | None) -> dict:
+        content = (
+            (f"Feedback from last round:\n{feedback}\n\n" if feedback else "")
             + "Propose priority staging zones."
         )
         return self.call_tool(content, PROPOSE_TOOL)
