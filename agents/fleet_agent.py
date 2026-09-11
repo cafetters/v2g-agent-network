@@ -52,11 +52,11 @@ class FleetAgent(BaseAgent):
         "leave the lowest-priority zones unserved and say so in objections."
     )
 
-    def allocate(self, fleet: list, priority_zones: dict, feedback: str | None) -> dict:
+    def allocate(self, fleet: list, context: dict, feedback: str | None) -> dict:
         content = (
             f"Fleet status:\n{json.dumps(fleet)}\n\n"
-            f"Priority zones from EmergencyAgent:\n{json.dumps(priority_zones)}\n\n"
-            + (f"Utility feedback from last round:\n{feedback}\n\n" if feedback else "")
+            f"Staging context:\n{json.dumps(context)}\n\n"
+            + (f"Feedback from last round:\n{feedback}\n\n" if feedback else "")
             + "Propose a bus-to-neighborhood allocation."
         )
         return self.call_tool(content, ALLOCATE_TOOL)
