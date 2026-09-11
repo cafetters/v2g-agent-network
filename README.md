@@ -73,6 +73,45 @@ it: 2.1 kWh per critical resident versus Dorchester's 5.5. Mid-priority
 neighborhoods got nothing because of fleet exhaustion, not grid limits. The
 negotiation converged to the same plan in 9 of 10 runs.
 
+### Proposer order comparison (pre-deterministic-verdict)
+
+These runs used the older LLM-gated Utility verdict (before the approve/reject
+decision moved into code), so they are not directly comparable to later
+results; a like-with-like rerun on the current code is planned. The fleet
+half was truncated at 3 of 10 runs when the API credit balance ran out
+mid-batch — treat it as suggestive, not conclusive.
+
+```
+proposer=emergency (n=10): Approved 10/10 | mean rounds 2.5 | mean kWh 2597
+Neighborhood   VulnRank CovRank  MeanKWh  MeanCov   Cov%  ZeroBusRuns
+---------------------------------------------------------------------
+Dorchester            2       1     1339      260   100%            0
+Mattapan              3       2      694      180   100%            0
+East Boston           1       3      418      210   100%            0
+Roxbury               4       4      146       88    40%            6
+Charlestown           6       5        0        0     0%           10
+South Boston          7       6        0        0     0%           10
+Hyde Park             5       7        0        0     0%           10
+Back Bay              8       8        0        0     0%           10
+
+proposer=fleet (n=3, TRUNCATED): Approved 3/3 | mean rounds 2.3 | mean kWh 2465
+Neighborhood   VulnRank CovRank  MeanKWh  MeanCov   Cov%  ZeroBusRuns
+---------------------------------------------------------------------
+Dorchester            2       1      581      260   100%            0
+Roxbury               4       2      524      220   100%            0
+East Boston           1       3      418      210   100%            0
+Mattapan              3       4      357      180   100%            0
+Charlestown           6       5      252       60    67%            1
+Hyde Park             5       6      230       93    67%            1
+South Boston          7       7      103       37    33%            2
+Back Bay              8       8        0        0     0%            3
+```
+
+The early signal, subject to the small fleet-half sample: fleet-first spreads
+coverage wider but shallower — six or seven neighborhoods served instead of
+three or four, with Dorchester's depth less than half — while East Boston's
+one-bus cap binds identically under both orderings.
+
 ## How to run it
 
 ```powershell
