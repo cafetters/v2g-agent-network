@@ -112,6 +112,50 @@ coverage wider but shallower — six or seven neighborhoods served instead of
 three or four, with Dorchester's depth less than half — while East Boston's
 one-bus cap binds identically under both orderings.
 
+### Proposer order comparison (deterministic verdict — current code)
+
+Full 10-and-10 rerun on the current code (20/20 approved, $1.31 total with
+prompt caching):
+
+```
+proposer=emergency: mean rounds 2.0 | round-1 rejections 10/10 | mean kWh 2597
+Neighborhood   VulnRank CovRank  MeanKWh  MeanCov   Cov%  ZeroBusRuns
+---------------------------------------------------------------------
+Dorchester            2       1     1076      260   100%            0
+Mattapan              3       2      682      180   100%            0
+Roxbury               4       3      420      220   100%            0
+East Boston           1       4      418      210   100%            0
+Charlestown           6       5        0        0     0%           10
+South Boston          7       6        0        0     0%           10
+Hyde Park             5       7        0        0     0%           10
+Back Bay              8       8        0        0     0%           10
+
+proposer=fleet: mean rounds 1.2 | round-1 rejections 2/10 | mean kWh 2559
+Neighborhood   VulnRank CovRank  MeanKWh  MeanCov   Cov%  ZeroBusRuns
+---------------------------------------------------------------------
+Dorchester            2       1      814      260   100%            0
+Roxbury               4       2      346      220   100%            0
+Mattapan              3       3      345      180   100%            0
+Charlestown           6       4      344       81    90%            1
+East Boston           1       5      340      210   100%            0
+Hyde Park             5       6      332      126    90%            1
+South Boston          7       7       38       11    10%            9
+Back Bay              8       8        0        0     0%           10
+```
+
+The pattern from the truncated run holds at full sample: emergency-first
+concentrates depth on the top four vulnerability ranks and abandons the rest;
+fleet-first serves six or seven sites but drops East Boston to coverage rank
+five. Fleet-first converges faster (1.2 rounds vs 2.0) because single-bus
+spreads are grid-compliant from the start.
+
+One caveat found in the logs: in 9 of 10 fleet-first runs the utility model
+returned `approved: false` while its own per-site analysis found no
+violations (its summary field was literally the word "placeholder") — the
+computed verdict overrode it every time. Under the old LLM-gated verdict
+those runs would have churned, so fleet-first's speed advantage exists
+partly because approval is now computed in code.
+
 ## How to run it
 
 ```powershell
