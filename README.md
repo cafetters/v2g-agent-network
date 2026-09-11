@@ -29,6 +29,41 @@ drops repeat bus assignments before validation. The lesson: the constraint
 moved from the model into the environment. Prompts shape behavior; code
 guarantees invariants.
 
+A later 10-run batch surfaced a third failure in the same family: the fleet
+agent broke its own output contract, returning a bare string where its tool
+schema required an object. The fix was schema enforcement — `strict: true`
+on the tool definitions so the API guarantees conforming output — not
+prompting.
+
+## Who actually gets protected
+
+My prediction, typed before running the batch:
+
+> East Boston ranks first on vulnerability and lands near the bottom on
+> coverage because its tie-in caps it at one bus.
+
+Results over 10 runs (`python orchestrator.py --runs 10`):
+
+```
+Approved: 8/10 | Utility rejected round 1: 10/10 | mean rounds: 2.8 | mean kWh staged: 2625
+
+Neighborhood   VulnRank CovRank  MeanKWh  MeanCov   Cov%  ZeroBusRuns
+---------------------------------------------------------------------
+Dorchester            2       1     1428      260   100%            0
+Mattapan              3       2      636      180   100%            0
+East Boston           1       3      446      210   100%            0
+Roxbury               4       4      115       44    20%            8
+Charlestown           6       5        0        0     0%           10
+South Boston          7       6        0        0     0%           10
+Hyde Park             5       7        0        0     0%           10
+Back Bay              8       8        0        0     0%           10
+```
+
+The tie-in cap limited East Boston's depth of coverage rather than excluding
+it: 2.1 kWh per critical resident versus Dorchester's 5.5. Mid-priority
+neighborhoods got nothing because of fleet exhaustion, not grid limits. The
+negotiation converged to the same plan in 9 of 10 runs.
+
 ## How to run it
 
 ```powershell
