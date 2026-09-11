@@ -6,6 +6,7 @@ from agents.base import BaseAgent
 PROPOSE_TOOL = {
     "name": "propose_priority_zones",
     "description": "Propose neighborhoods to stage bus batteries in, ranked by need.",
+    "strict": True,
     "input_schema": {
         "type": "object",
         "properties": {
@@ -19,11 +20,13 @@ PROPOSE_TOOL = {
                         "reason": {"type": "string"},
                     },
                     "required": ["neighborhood", "priority_score", "reason"],
+                    "additionalProperties": False,
                 },
             },
             "summary": {"type": "string", "description": "One-line rationale."},
         },
         "required": ["priority_zones", "summary"],
+        "additionalProperties": False,
     },
 }
 

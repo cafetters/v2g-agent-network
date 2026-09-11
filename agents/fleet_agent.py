@@ -6,6 +6,7 @@ from agents.base import BaseAgent
 ALLOCATE_TOOL = {
     "name": "propose_allocation",
     "description": "Assign specific buses to staging neighborhoods.",
+    "strict": True,
     "input_schema": {
         "type": "object",
         "properties": {
@@ -19,6 +20,7 @@ ALLOCATE_TOOL = {
                         "reason": {"type": "string"},
                     },
                     "required": ["bus_id", "neighborhood", "reason"],
+                    "additionalProperties": False,
                 },
             },
             "objections": {
@@ -29,6 +31,7 @@ ALLOCATE_TOOL = {
             "summary": {"type": "string", "description": "One-line rationale."},
         },
         "required": ["assignments", "objections", "summary"],
+        "additionalProperties": False,
     },
 }
 

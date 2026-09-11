@@ -6,6 +6,7 @@ from agents.base import BaseAgent
 VALIDATE_TOOL = {
     "name": "validate_plan",
     "description": "Approve or reject the proposed staging allocation.",
+    "strict": True,
     "input_schema": {
         "type": "object",
         "properties": {
@@ -23,11 +24,13 @@ VALIDATE_TOOL = {
                         },
                     },
                     "required": ["neighborhood", "reason", "max_buses"],
+                    "additionalProperties": False,
                 },
             },
             "summary": {"type": "string", "description": "One-line rationale."},
         },
         "required": ["approved", "rejections", "summary"],
+        "additionalProperties": False,
     },
 }
 
