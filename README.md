@@ -94,4 +94,4 @@ The round-by-round trace prints to the console; the final plan is written to
 
 ---
 
-Built with Claude Code in one evening; the scenario design and findings are mine.
+Built with Claude Code
