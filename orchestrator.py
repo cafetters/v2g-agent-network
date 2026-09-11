@@ -49,12 +49,17 @@ def emit(log, rnd, agent, decision, reason,
     log.event(rnd, agent, decision, reason, tool_input, tool_output, guard)
 
 
-def apply_guards(allocation: dict, caps: dict) -> tuple[dict, list]:
-    """Deterministic guards: drop malformed/duplicate entries, enforce site caps."""
+def apply_guards(allocation: dict, caps: dict,
+                 valid_buses: set, valid_hoods: set) -> tuple[dict, list]:
+    """Deterministic guards: drop bad entries, enforce site caps."""
     guards, seen, unique = [], set(), []
     for a in allocation["assignments"]:
-        if not isinstance(a, dict) or "bus_id" not in a:
+        if not isinstance(a, dict) or "bus_id" not in a or "neighborhood" not in a:
             guards.append({"type": "malformed_dropped", "entry": str(a)[:80]})
+            continue
+        if a["bus_id"] not in valid_buses or a["neighborhood"] not in valid_hoods:
+            guards.append({"type": "unknown_dropped", "bus_id": a["bus_id"],
+                           "neighborhood": a["neighborhood"]})
             continue
         if a["bus_id"] in seen:
             guards.append({"type": "duplicate_dropped", "bus_id": a["bus_id"],
@@ -75,14 +80,34 @@ def apply_guards(allocation: dict, caps: dict) -> tuple[dict, list]:
     return allocation, guards
 
 
+def compute_violations(allocation: dict, neighborhoods: list, fleet: list) -> list:
+    """Ground-truth capacity check: summed export kW per site vs grid tie-in."""
+    export = {b["id"]: b["v2g_export_kw"] for b in fleet}
+    ties = {h["name"]: h["grid_tie_in_kw"] for h in neighborhoods}
+    load = {}
+    for a in allocation["assignments"]:
+        load[a["neighborhood"]] = load.get(a["neighborhood"], 0) + export[a["bus_id"]]
+    rate = max(export.values())
+    return [{"neighborhood": h, "load_kw": kw, "cap_kw": ties[h],
+             "max_buses": ties[h] // rate}
+            for h, kw in load.items() if kw > ties[h]]
+
+
 def negotiate(agents, data, proposer, log):
-    """One full negotiation. Returns (allocation, rounds, approved, rejected_r1, verdict)."""
+    """One full negotiation.
+
+    Returns (allocation, rounds, approved, rejected_r1, last_verdict,
+    verdict_disagreements). The approve/reject decision is computed in code;
+    the Utility model supplies reasoning text only.
+    """
     emergency, fleet_agent, utility = agents
     neighborhoods, fleet, forecast = data
     fleet_view = [{k: v for k, v in h.items() if k != "grid_tie_in_kw"}
                   for h in neighborhoods]
-    feedback, allocation, verdict, rejected_r1 = None, None, None, False
-    reject_count, forced_caps = {}, {}
+    valid_buses = {b["id"] for b in fleet}
+    valid_hoods = {h["name"] for h in neighborhoods}
+    feedback, allocation, last, rejected_r1 = None, None, None, False
+    reject_count, forced_caps, disagreements = {}, {}, 0
 
     for rnd in range(1, MAX_ROUNDS + 1):
         if VERBOSE:
@@ -98,7 +123,8 @@ def negotiate(agents, data, proposer, log):
             context = {"forecast": forecast, "neighborhoods": fleet_view}
             allocation = fleet_agent.allocate(fleet, context, feedback)
 
-        allocation, guards = apply_guards(allocation, forced_caps)
+        allocation, guards = apply_guards(allocation, forced_caps,
+                                          valid_buses, valid_hoods)
         emit(log, rnd, fleet_agent.name,
              f"allocated {len(allocation['assignments'])} buses",
              allocation["summary"], {"feedback": feedback}, allocation)
@@ -112,7 +138,7 @@ def negotiate(agents, data, proposer, log):
         if proposer == "fleet":
             review = emergency.propose(forecast, neighborhoods, json.dumps({
                 "fleet_allocation": allocation["assignments"],
-                "utility_rejections": verdict["rejections"] if verdict else [],
+                "utility_rejections": (last or {}).get("rejections", []),
             }))
             zones = ", ".join(z["neighborhood"] for z in review["priority_zones"])
             emit(log, rnd, emergency.name,
@@ -120,15 +146,34 @@ def negotiate(agents, data, proposer, log):
                  review["summary"], {"allocation": allocation["assignments"]}, review)
 
         verdict = utility.validate(allocation, neighborhoods, fleet)
-        if verdict["approved"]:
-            emit(log, rnd, utility.name, "APPROVED", verdict["summary"],
+        violations = compute_violations(allocation, neighborhoods, fleet)
+        approved = not violations
+        if approved != verdict["approved"]:
+            disagreements += 1
+            emit(log, rnd, "orchestrator",
+                 f"verdict override: model said "
+                 f"{'approve' if verdict['approved'] else 'reject'}, "
+                 f"code computed {'approve' if approved else 'reject'}",
+                 verdict["summary"],
+                 guard={"type": "verdict_disagreement",
+                        "model_approved": verdict["approved"],
+                        "computed_approved": approved, "violations": violations})
+        if approved:
+            emit(log, rnd, utility.name, "APPROVED (computed)", verdict["summary"],
                  {"allocation": allocation["assignments"]}, verdict)
-            return allocation, rnd, True, rejected_r1, verdict
+            return (allocation, rnd, True, rejected_r1,
+                    {"summary": verdict["summary"], "rejections": []}, disagreements)
         if rnd == 1:
             rejected_r1 = True
-        emit(log, rnd, utility.name, "REJECTED", verdict["summary"],
+        rejections = [
+            {"neighborhood": v["neighborhood"], "max_buses": v["max_buses"],
+             "reason": f"{v['load_kw']} kW allocated exceeds "
+                       f"{v['cap_kw']} kW tie-in"}
+            for v in violations]
+        last = {"summary": verdict["summary"], "rejections": rejections}
+        emit(log, rnd, utility.name, "REJECTED (computed)", verdict["summary"],
              {"allocation": allocation["assignments"]}, verdict)
-        for r in verdict["rejections"]:
+        for r in rejections:
             emit(log, rnd, utility.name,
                  f"limit: {r['neighborhood']} max {r['max_buses']} buses", r["reason"])
             hood = r["neighborhood"]
@@ -142,14 +187,14 @@ def negotiate(agents, data, proposer, log):
                      guard={"type": "cap_armed", "neighborhood": hood,
                             "cap": forced_caps[hood]})
         feedback = json.dumps({
-            "rejections": verdict["rejections"],
+            "rejections": rejections,
             "emergency_review": review,
             "orchestrator_enforced_caps": forced_caps,
             "note": "Caps in orchestrator_enforced_caps are applied automatically "
                     "before validation. Do not exceed them; only fill the "
                     "remaining capacity elsewhere with remaining eligible buses.",
         })
-    return allocation, MAX_ROUNDS, False, rejected_r1, verdict
+    return allocation, MAX_ROUNDS, False, rejected_r1, last, disagreements
 
 
 def build_plan(allocation, neighborhoods, fleet, forecast, rounds, status,
@@ -196,7 +241,9 @@ def summarize_lines(results, neighborhoods, title):
              f"| mean rounds: {sum(r['rounds'] for r in results) / n:.1f} "
              f"| mean kWh (approved): "
              + (f"{sum(r['total_kwh'] for r in approved) / n_app:.0f}"
-                if n_app else "n/a")]
+                if n_app else "n/a"),
+             f"verdict disagreements (model vs computed): "
+             f"{sum(r.get('verdict_disagreements', 0) for r in results)}"]
     if not n_app:
         lines.append("No approved runs; skipping per-neighborhood table.")
         return lines
@@ -245,17 +292,17 @@ def run_batch(runs, proposer, agents, data, stamp):
         run_id = f"{stamp}-{proposer}-run{i + 1:02d}"
         log = RunLog(os.path.join("logs", run_id + ".jsonl"), run_id)
         try:
-            allocation, rounds, approved, rejected_r1, verdict = negotiate(
-                agents, data, proposer, log)
+            (allocation, rounds, approved, rejected_r1, verdict,
+             disagreements) = negotiate(agents, data, proposer, log)
         finally:
             log.close()
         plan = build_plan(
             allocation, neighborhoods, fleet, forecast, rounds,
             "approved" if approved else "unapproved",
-            None if approved else {"summary": verdict["summary"],
-                                   "rejections": verdict["rejections"]})
+            None if approved else verdict)
         results.append({
             "rounds": rounds, "approved": approved, "rejected_r1": rejected_r1,
+            "verdict_disagreements": disagreements,
             "total_kwh": plan["total_kwh_staged"],
             "per_hood": {s["neighborhood"]: {
                 "kwh": s["kwh_available"], "covered": s["critical_residents_covered"],
@@ -264,7 +311,8 @@ def run_batch(runs, proposer, agents, data, stamp):
         if runs > 1 or not VERBOSE:
             print(f"[{proposer}] run {i + 1}/{runs}: "
                   f"{'approved' if approved else 'UNAPPROVED'} in {rounds} round(s), "
-                  f"{plan['total_kwh_staged']} kWh staged")
+                  f"{plan['total_kwh_staged']} kWh staged, "
+                  f"{disagreements} verdict disagreement(s)")
         elif not approved:
             print(f"\nNo approval after {MAX_ROUNDS} rounds; writing plan "
                   f"with status=unapproved and the last rejection attached.")

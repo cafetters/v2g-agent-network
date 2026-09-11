@@ -35,6 +35,15 @@ schema required an object. The fix was schema enforcement — `strict: true`
 on the tool definitions so the API guarantees conforming output — not
 prompting.
 
+A fourth, again under fleet-exhaustion pressure: the fleet agent emitted a
+placeholder assignment whose `bus_id` was literally `"Hyde Park"` — a
+neighborhood name where a bus ID belongs — and in another run the utility
+rejected a plan its own reasoning text said was fine. The orchestrator now
+drops unknown bus IDs and neighborhoods deterministically, and the utility's
+approve/reject verdict is computed in code from tie-in capacities; the model
+supplies reasoning text only, and every model-vs-computed disagreement is
+logged.
+
 ## Who actually gets protected
 
 My prediction, typed before running the batch:
