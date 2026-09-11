@@ -1,0 +1,5 @@
+{
+  "name": "Baseline Nor'easter",
+  "description": "A single fall nor'easter approaches Boston with 45 mph sustained winds and high outage probability in coastal and high-vulnerability neighborhoods. Twelve battery-electric buses across three depots are mostly idle and well charged, and grid tie-in capacity is generous everywhere except East Boston, whose 100 kW connection fits only one bus. This is the original synthetic scenario the project was built around.",
+  "stresses": "The engineered conflict between vulnerability priority and one weak grid tie-in: East Boston ranks first on need but can only accept a single bus, forcing the agents to negotiate depth-versus-breadth."
+}

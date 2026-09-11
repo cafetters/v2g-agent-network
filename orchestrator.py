@@ -13,8 +13,8 @@ MAX_ROUNDS = 4
 VERBOSE = True
 
 
-def load(name: str):
-    with open(os.path.join("data", name), encoding="utf-8") as f:
+def load(scenario: str, name: str):
+    with open(os.path.join("scenarios", scenario, name), encoding="utf-8") as f:
         return json.load(f)
 
 
@@ -292,12 +292,12 @@ def replay(path: str):
             print(f"  [{e['agent']}] {e['decision']}\n      {e['reason']}")
 
 
-def run_batch(runs, proposer, agents, data, stamp):
+def run_batch(runs, proposer, agents, data, stamp, scenario):
     from agents.base import BaseAgent
     neighborhoods, fleet, forecast = data
     results, plan = [], None
     for i in range(runs):
-        run_id = f"{stamp}-{proposer}-run{i + 1:02d}"
+        run_id = f"{stamp}-{scenario}-{proposer}-run{i + 1:02d}"
         log = RunLog(os.path.join("logs", run_id + ".jsonl"), run_id)
         before = dict(BaseAgent.TOKENS)
         try:
@@ -310,6 +310,7 @@ def run_batch(runs, proposer, agents, data, stamp):
             allocation, neighborhoods, fleet, forecast, rounds,
             "approved" if approved else "unapproved",
             None if approved else verdict)
+        plan["scenario"] = scenario
         results.append({
             "rounds": rounds, "approved": approved, "rejected_r1": rejected_r1,
             "verdict_disagreements": disagreements, "tokens": tokens,
@@ -337,6 +338,8 @@ def main():
     parser.add_argument("--runs", type=int, default=1, help="number of simulations")
     parser.add_argument("--proposer", choices=["emergency", "fleet", "both"],
                         default="emergency", help="which agent proposes first")
+    parser.add_argument("--scenario", default="baseline-noreaster",
+                        help="scenario directory name under scenarios/")
     parser.add_argument("--replay", metavar="LOGFILE",
                         help="print a run's trace from a JSONL log; no API calls")
     args = parser.parse_args()
@@ -350,29 +353,38 @@ def main():
     from agents.utility_agent import UtilityAgent
 
     VERBOSE = args.runs == 1 and args.proposer != "both"
-    data = (load("neighborhoods.json"), load("fleet.json"), load("forecast.json"))
+    meta = load(args.scenario, "scenario.json")
+    data = (load(args.scenario, "neighborhoods.json"),
+            load(args.scenario, "fleet.json"), load(args.scenario, "forecast.json"))
     agents = (EmergencyAgent(data[2], data[0]), FleetAgent(data[1]),
               UtilityAgent(data[0], data[1]))
     os.makedirs("logs", exist_ok=True)
     os.makedirs("output", exist_ok=True)
     stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+    print(f"Scenario: {meta['name']} ({args.scenario})")
     print(f"Storm: {data[2]['storm_name']} arriving {data[2]['arrival_time']}")
 
     if args.proposer == "both":
-        res_e, _ = run_batch(args.runs, "emergency", agents, data, stamp)
-        res_f, plan = run_batch(args.runs, "fleet", agents, data, stamp)
+        res_e, _ = run_batch(args.runs, "emergency", agents, data, stamp,
+                             args.scenario)
+        res_f, plan = run_batch(args.runs, "fleet", agents, data, stamp,
+                                args.scenario)
         print()
-        left = summarize_lines(res_e, data[0], "proposer=emergency")
-        right = summarize_lines(res_f, data[0], "proposer=fleet")
+        left = summarize_lines(res_e, data[0],
+                               f"scenario={args.scenario} proposer=emergency")
+        right = summarize_lines(res_f, data[0],
+                                f"scenario={args.scenario} proposer=fleet")
         width = max(len(l) for l in left) + 2
         for l, r in zip_longest(left, right, fillvalue=""):
             print(f"{l:<{width}}| {r}")
     else:
-        results, plan = run_batch(args.runs, args.proposer, agents, data, stamp)
+        results, plan = run_batch(args.runs, args.proposer, agents, data, stamp,
+                                  args.scenario)
         if args.runs > 1:
             print()
-            print("\n".join(summarize_lines(results, data[0],
-                                            f"proposer={args.proposer}")))
+            print("\n".join(summarize_lines(
+                results, data[0],
+                f"scenario={args.scenario} proposer={args.proposer}")))
 
     with open(os.path.join("output", "staging_plan.json"), "w", encoding="utf-8") as f:
         json.dump(plan, f, indent=2)

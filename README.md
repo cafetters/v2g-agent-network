@@ -125,9 +125,29 @@ python orchestrator.py
 The round-by-round trace prints to the console; the final plan is written to
 `output/staging_plan.json`.
 
+## Scenarios
+
+Scenario data lives in `scenarios/<name>/`, four files each: `scenario.json`
+(name, one-paragraph description, and what the scenario is designed to
+stress), `neighborhoods.json`, `fleet.json`, and `forecast.json`. Select one
+with `--scenario` (default `baseline-noreaster`); `--runs` and `--proposer`
+work with any scenario, and the summary table prints the scenario name.
+
+| Scenario | One change | Stresses |
+|---|---|---|
+| `baseline-noreaster` | — (original synthetic data) | One weak tie-in (East Boston) vs top vulnerability rank |
+| `fleet-scarce` | Half the fleet in maintenance or under 30% charge | Fleet exhaustion: 4 eligible buses for 5+ zones |
+| `grid-scarce` | Every tie-in cut to 60 kW (one bus per site) | The capacity cap everywhere; pure breadth allocation |
+
+To add a scenario: create `scenarios/<name>/` with the same four files
+(`scenario.json` needs `name`, `description`, `stresses`; the other three
+follow the baseline's field layout), then run
+`python orchestrator.py --scenario <name> --runs 10`. Change one pressure per
+scenario so results stay attributable.
+
 ## Architecture (five lines)
 
-1. `data/` holds synthetic JSON: neighborhoods, fleet, and one storm forecast.
+1. `scenarios/<name>/` holds JSON per scenario: neighborhoods, fleet, one storm forecast, and a scenario description.
 2. Each agent in `agents/` is a class with a role system prompt and one decision tool; `tool_choice` forces a structured response.
 3. `orchestrator.py` loops: Emergency proposes -> Fleet allocates -> Utility validates.
 4. Rejections are serialized and fed back into the next round's prompts, and a deterministic guard drops duplicate bus assignments.

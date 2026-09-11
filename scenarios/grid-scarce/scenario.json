@@ -1,0 +1,5 @@
+{
+  "name": "Grid-Scarce Nor'easter",
+  "description": "The same fleet and the same storm as the baseline, but every neighborhood's grid tie-in has been cut to 60 kW — exactly one bus per site. The East Boston constraint that used to be the exception is now the rule everywhere: no site can take a second bus, so depth of coverage is impossible and the only question is which neighborhoods get their single bus.",
+  "stresses": "The capacity cap applied everywhere, not just East Boston: with one bus per site the negotiation becomes pure breadth allocation, and any two-bus assignment anywhere should draw an immediate utility rejection."
+}

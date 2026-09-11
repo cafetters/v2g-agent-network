@@ -1,0 +1,14 @@
+[
+  {"id": "BEB-01", "depot": "Cabot Yard",  "state_of_charge": 0.95, "battery_kwh": 440, "v2g_export_kw": 60, "route_status": "idle"},
+  {"id": "BEB-02", "depot": "Cabot Yard",  "state_of_charge": 0.90, "battery_kwh": 440, "v2g_export_kw": 60, "route_status": "maintenance"},
+  {"id": "BEB-03", "depot": "Cabot Yard",  "state_of_charge": 0.85, "battery_kwh": 440, "v2g_export_kw": 60, "route_status": "idle"},
+  {"id": "BEB-04", "depot": "Cabot Yard",  "state_of_charge": 0.20, "battery_kwh": 440, "v2g_export_kw": 60, "route_status": "idle"},
+  {"id": "BEB-05", "depot": "Arborway",    "state_of_charge": 0.92, "battery_kwh": 350, "v2g_export_kw": 60, "route_status": "idle"},
+  {"id": "BEB-06", "depot": "Arborway",    "state_of_charge": 0.25, "battery_kwh": 350, "v2g_export_kw": 60, "route_status": "idle"},
+  {"id": "BEB-07", "depot": "Arborway",    "state_of_charge": 0.80, "battery_kwh": 350, "v2g_export_kw": 60, "route_status": "in_service"},
+  {"id": "BEB-08", "depot": "Arborway",    "state_of_charge": 0.15, "battery_kwh": 350, "v2g_export_kw": 60, "route_status": "idle"},
+  {"id": "BEB-09", "depot": "Charlestown", "state_of_charge": 0.90, "battery_kwh": 440, "v2g_export_kw": 60, "route_status": "idle"},
+  {"id": "BEB-10", "depot": "Charlestown", "state_of_charge": 0.28, "battery_kwh": 440, "v2g_export_kw": 60, "route_status": "idle"},
+  {"id": "BEB-11", "depot": "Charlestown", "state_of_charge": 0.82, "battery_kwh": 440, "v2g_export_kw": 60, "route_status": "in_service"},
+  {"id": "BEB-12", "depot": "Charlestown", "state_of_charge": 0.60, "battery_kwh": 440, "v2g_export_kw": 60, "route_status": "maintenance"}
+]

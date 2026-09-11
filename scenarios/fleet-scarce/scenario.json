@@ -1,0 +1,5 @@
+{
+  "name": "Fleet-Scarce Nor'easter",
+  "description": "The same neighborhoods and the same storm as the baseline, but the fleet is in bad shape: half of the twelve buses are unavailable, sitting in maintenance or below 30% charge after a hard service week. Only four idle buses clear the 50% state-of-charge floor, so most priority zones cannot be served no matter how the negotiation goes.",
+  "stresses": "Fleet exhaustion: the Fleet agent must ration four eligible buses across five-plus priority zones, making triage, honest unserved-zone reporting, and pushback quality the binding constraints instead of grid capacity."
+}
