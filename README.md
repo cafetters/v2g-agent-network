@@ -242,6 +242,36 @@ Three findings, every number traceable to `output/backtest_report.json`:
   fleet is scarce, the vulnerability ranking upstream is what points the
   buses at the right neighborhoods.
 
+## Heat wave: scarcity and stranding
+
+The `boston-heatwave` scenario re-derives vulnerability from real CDC SVI
+age-65+ and poverty fields (elderly-without-AC proxy, labeled estimate in
+`scenario.json`), which reshuffles the map: Roxbury and Mattapan rank first
+and second instead of East Boston. Outage risk is broad and flat (grid load,
+not wind), and seven of twelve buses are on midday routes, leaving two
+eligible idle buses. Ten runs per proposer, scored:
+
+```
+                      emergency-first          fleet-first
+covered residents     2530 (2426-3470)         4464 (2426-8308)
+kWh per critical      0.34 (0.27-0.38)         0.24 (0.11-0.33)
+top-2 equity share    1.00 (1.00-1.00)         0.74 (0.00-1.00)
+kWh Gini              0.87 (0.84-0.88)         0.86 (0.80-0.88)
+service stranded      0 (0-0)                  0-1 (stranded in 2/10 runs)
+```
+
+Three results. First, scarcity swamps everything: with ~840 staged kWh for
+thousands of heat-critical residents, depth collapses to a third of a kWh
+per person — an order of magnitude below the storm scenarios — so V2G
+staging under full daytime service is triage, not coverage. Second,
+emergency-first is deterministic under scarcity (both buses to top-ranked
+Roxbury, every run) while fleet-first is erratic — sometimes covering 8,300
+residents across two sites, twice putting zero energy in the top two
+vulnerability ranks. Third, the stranding rule held only when the Fleet
+agent worked from a ranking: proposing on its own, it pulled an in-service
+bus in two of ten runs — its own hard rule, broken under pressure and caught
+by the `service_stranded` score, never by the negotiation itself.
+
 ## Architecture (five lines)
 
 1. `scenarios/<name>/` holds JSON per scenario: neighborhoods, fleet, one storm forecast, and a scenario description.
