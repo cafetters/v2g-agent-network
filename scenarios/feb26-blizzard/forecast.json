@@ -1,0 +1,16 @@
+{
+  "storm_name": "February 2026 Blizzard (backtest)",
+  "arrival_time": "2026-02-22T20:00:00-05:00",
+  "sustained_wind_mph": 45,
+  "gust_mph": 70,
+  "expected_outage_probability": {
+    "East Boston": 0.85,
+    "Dorchester": 0.72,
+    "Mattapan": 0.74,
+    "Roxbury": 0.74,
+    "Charlestown": 0.62,
+    "South Boston": 0.53,
+    "Hyde Park": 0.68,
+    "Back Bay": 0.49
+  }
+}

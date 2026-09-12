@@ -1,0 +1,74 @@
+[
+  {
+    "name": "East Boston",
+    "lat": 42.375,
+    "lon": -71.039,
+    "outage_risk": 0.36,
+    "social_vulnerability_index": 0.807,
+    "critical_residents": 181,
+    "grid_tie_in_kw": 100
+  },
+  {
+    "name": "Dorchester",
+    "lat": 42.3,
+    "lon": -71.06,
+    "outage_risk": 0.11,
+    "social_vulnerability_index": 0.835,
+    "critical_residents": 498,
+    "grid_tie_in_kw": 300
+  },
+  {
+    "name": "Mattapan",
+    "lat": 42.277,
+    "lon": -71.092,
+    "outage_risk": 0.12,
+    "social_vulnerability_index": 0.89,
+    "critical_residents": 105,
+    "grid_tie_in_kw": 240
+  },
+  {
+    "name": "Roxbury",
+    "lat": 42.324,
+    "lon": -71.084,
+    "outage_risk": 0.12,
+    "social_vulnerability_index": 0.875,
+    "critical_residents": 206,
+    "grid_tie_in_kw": 300
+  },
+  {
+    "name": "Charlestown",
+    "lat": 42.378,
+    "lon": -71.062,
+    "outage_risk": 0.08,
+    "social_vulnerability_index": 0.435,
+    "critical_residents": 79,
+    "grid_tie_in_kw": 180
+  },
+  {
+    "name": "South Boston",
+    "lat": 42.333,
+    "lon": -71.049,
+    "outage_risk": 0.07,
+    "social_vulnerability_index": 0.25,
+    "critical_residents": 145,
+    "grid_tie_in_kw": 240
+  },
+  {
+    "name": "Hyde Park",
+    "lat": 42.256,
+    "lon": -71.124,
+    "outage_risk": 0.11,
+    "social_vulnerability_index": 0.766,
+    "critical_residents": 152,
+    "grid_tie_in_kw": 180
+  },
+  {
+    "name": "Back Bay",
+    "lat": 42.351,
+    "lon": -71.08,
+    "outage_risk": 0.08,
+    "social_vulnerability_index": 0.373,
+    "critical_residents": 68,
+    "grid_tie_in_kw": 360
+  }
+]

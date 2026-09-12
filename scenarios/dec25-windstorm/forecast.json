@@ -1,0 +1,16 @@
+{
+  "storm_name": "December 2025 Windstorm (backtest)",
+  "arrival_time": "2025-12-19T09:00:00-05:00",
+  "sustained_wind_mph": 40,
+  "gust_mph": 64,
+  "expected_outage_probability": {
+    "East Boston": 0.31,
+    "Dorchester": 0.22,
+    "Mattapan": 0.22,
+    "Roxbury": 0.22,
+    "Charlestown": 0.21,
+    "South Boston": 0.18,
+    "Hyde Park": 0.2,
+    "Back Bay": 0.15
+  }
+}

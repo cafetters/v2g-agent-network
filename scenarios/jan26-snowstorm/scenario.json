@@ -1,0 +1,13 @@
+{
+  "name": "January 2026 Snowstorm (backtest)",
+  "description": "Heavy snow Jan 25-27 2026: 18-23 inches in Suffolk County, 23.2 at Logan (NOAA episode 209121). Grid largely held; brief outages in East Boston. MBTA on reduced schedules, Mattapan trolley shuttle-bused.",
+  "stresses": "Backtest against the real event; see data/SOURCES.md",
+  "backtest": {
+    "observed_outage_neighborhoods": [
+      "East Boston"
+    ],
+    "observed_outage_label": "sourced: Axios via search snippet (hundreds out in East Boston); statewide outages minimal (WBUR)",
+    "critical_load_kw_per_resident": 0.3,
+    "estimates": "critical_residents = 0.4% of population (ESTIMATE); outage_risk SVI-allocated (ESTIMATE); tie-ins + SoC/status SYNTHETIC"
+  }
+}

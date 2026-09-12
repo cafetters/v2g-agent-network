@@ -1,0 +1,98 @@
+[
+  {
+    "id": "BEB-01",
+    "depot": "North Cambridge",
+    "state_of_charge": 0.95,
+    "battery_kwh": 440,
+    "v2g_export_kw": 60,
+    "route_status": "idle"
+  },
+  {
+    "id": "BEB-02",
+    "depot": "North Cambridge",
+    "state_of_charge": 0.9,
+    "battery_kwh": 440,
+    "v2g_export_kw": 60,
+    "route_status": "idle"
+  },
+  {
+    "id": "BEB-03",
+    "depot": "North Cambridge",
+    "state_of_charge": 0.85,
+    "battery_kwh": 440,
+    "v2g_export_kw": 60,
+    "route_status": "idle"
+  },
+  {
+    "id": "BEB-04",
+    "depot": "North Cambridge",
+    "state_of_charge": 0.2,
+    "battery_kwh": 440,
+    "v2g_export_kw": 60,
+    "route_status": "idle"
+  },
+  {
+    "id": "BEB-05",
+    "depot": "North Cambridge",
+    "state_of_charge": 0.92,
+    "battery_kwh": 350,
+    "v2g_export_kw": 60,
+    "route_status": "idle"
+  },
+  {
+    "id": "BEB-06",
+    "depot": "North Cambridge",
+    "state_of_charge": 0.88,
+    "battery_kwh": 350,
+    "v2g_export_kw": 60,
+    "route_status": "idle"
+  },
+  {
+    "id": "BEB-07",
+    "depot": "North Cambridge",
+    "state_of_charge": 0.8,
+    "battery_kwh": 350,
+    "v2g_export_kw": 60,
+    "route_status": "in_service"
+  },
+  {
+    "id": "BEB-08",
+    "depot": "North Cambridge",
+    "state_of_charge": 0.15,
+    "battery_kwh": 350,
+    "v2g_export_kw": 60,
+    "route_status": "idle"
+  },
+  {
+    "id": "BEB-09",
+    "depot": "North Cambridge",
+    "state_of_charge": 0.9,
+    "battery_kwh": 440,
+    "v2g_export_kw": 60,
+    "route_status": "idle"
+  },
+  {
+    "id": "BEB-10",
+    "depot": "North Cambridge",
+    "state_of_charge": 0.87,
+    "battery_kwh": 440,
+    "v2g_export_kw": 60,
+    "route_status": "idle"
+  },
+  {
+    "id": "BEB-11",
+    "depot": "North Cambridge",
+    "state_of_charge": 0.82,
+    "battery_kwh": 440,
+    "v2g_export_kw": 60,
+    "route_status": "in_service"
+  },
+  {
+    "id": "BEB-12",
+    "depot": "North Cambridge",
+    "state_of_charge": 0.6,
+    "battery_kwh": 440,
+    "v2g_export_kw": 60,
+    "route_status": "maintenance"
+  }
+]

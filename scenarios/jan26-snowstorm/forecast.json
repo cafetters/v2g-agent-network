@@ -1,0 +1,16 @@
+{
+  "storm_name": "January 2026 Snowstorm (backtest)",
+  "arrival_time": "2026-01-25T10:00:00-05:00",
+  "sustained_wind_mph": 30,
+  "gust_mph": 45,
+  "expected_outage_probability": {
+    "East Boston": 0.36,
+    "Dorchester": 0.11,
+    "Mattapan": 0.12,
+    "Roxbury": 0.12,
+    "Charlestown": 0.08,
+    "South Boston": 0.07,
+    "Hyde Park": 0.11,
+    "Back Bay": 0.08
+  }
+}

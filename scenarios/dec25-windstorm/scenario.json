@@ -1,0 +1,15 @@
+{
+  "name": "December 2025 Windstorm (backtest)",
+  "description": "High wind Dec 19 2025 (NOAA episode 208283): gusts 50-60 mph, 64 mph at Logan. Minor disruption case; transit assumed near-normal (no suspension found).",
+  "stresses": "Backtest against the real event; see data/SOURCES.md",
+  "backtest": {
+    "observed_outage_neighborhoods": [
+      "East Boston",
+      "Charlestown",
+      "South Boston"
+    ],
+    "observed_outage_label": "ESTIMATE: wind event, gust 64 mph at Logan (NOAA episode 208283); coastal exposure assumed, no neighborhood outage data found",
+    "critical_load_kw_per_resident": 0.3,
+    "estimates": "critical_residents = 0.4% of population (ESTIMATE); outage_risk SVI-allocated (ESTIMATE); tie-ins + SoC/status SYNTHETIC"
+  }
+}

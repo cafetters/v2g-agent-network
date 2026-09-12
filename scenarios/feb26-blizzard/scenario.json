@@ -1,0 +1,20 @@
+{
+  "name": "February 2026 Blizzard (backtest)",
+  "description": "Blizzard Feb 22-23 2026 (NOAA episode 209918): blizzard conditions at Logan, statewide outage peak 290,000 customers, restoration 3-5 days in hardest-hit areas. MBTA on Sunday-level schedules two days.",
+  "stresses": "Backtest against the real event; see data/SOURCES.md",
+  "backtest": {
+    "observed_outage_neighborhoods": [
+      "East Boston",
+      "Dorchester",
+      "Mattapan",
+      "Roxbury",
+      "Charlestown",
+      "South Boston",
+      "Hyde Park",
+      "Back Bay"
+    ],
+    "observed_outage_label": "ESTIMATE: statewide peak 290,000 out (CBS Boston); no neighborhood counts public - exposure allocated across all neighborhoods by SVI weight",
+    "critical_load_kw_per_resident": 0.3,
+    "estimates": "critical_residents = 0.4% of population (ESTIMATE); outage_risk SVI-allocated (ESTIMATE); tie-ins + SoC/status SYNTHETIC"
+  }
+}
