@@ -203,6 +203,45 @@ follow the baseline's field layout), then run
 `python orchestrator.py --scenario <name> --runs 10`. Change one pressure per
 scenario so results stay attributable.
 
+## What we could have done
+
+A backtest against the three real Boston-area winter 2025-26 events from the
+NOAA Storm Events Database (episodes 209121, 209918, 208283 — raw rows in
+`data/raw/<event>/`), with real neighborhood SVI (CDC SVI 2022 aggregated by
+`scripts/aggregate_svi.py`), fleet availability matching reported MBTA
+service levels, and outage exposure from news reports — every URL and pull
+date in `data/SOURCES.md`. Neighborhood-level outage counts are not public,
+so exposure is SVI-allocated and labeled ESTIMATE except where sourced;
+critical residents are 0.4% of real population (ESTIMATE); coverage hours
+assume 0.3 kW per critical resident (both recorded in each `scenario.json`).
+Grid tie-in capacity remains synthetic: distribution-level interconnection
+data is not public. Five runs per proposer per event via
+`scripts/backtest.py`; all 30 negotiations approved
+(`output/backtest_report.json`).
+
+| Event | Neighborhoods that lost power | Emergency-first covered | Fleet-first covered |
+|---|---|---|---|
+| Jan 25-27 snowstorm | East Boston (sourced) | 181/181, 7.7 h | 181/181, 7.1 h |
+| Feb 22-23 blizzard | all 8 (ESTIMATE, 290K out statewide) | 912/1434 | 1337/1434 |
+| Dec 19 windstorm | 3 coastal (ESTIMATE) | 145/405 (EB, 7.7 h) | **0/405** |
+
+Three findings, every number traceable to `output/backtest_report.json`:
+
+- **January**: both orderings pre-position a bus in East Boston — the one
+  neighborhood with directly sourced outages — giving its estimated 181
+  critical residents about 7 hours of coverage before landfall.
+- **February**: with everyone exposed, breadth wins — fleet-first covers
+  1,337 of 1,434 estimated critical residents versus 912 for
+  emergency-first on identical staged energy (2,958 kWh) — though
+  emergency-first buys longer coverage where vulnerability is highest
+  (Mattapan 20.1 h vs 11.4 h).
+- **December**: the failure case. With 6 of 12 buses in weekday service,
+  fleet-first staged its few eligible buses in big inland neighborhoods and
+  covered zero of the coastal neighborhoods that actually went dark, in all
+  five runs; emergency-first reached East Boston in four of five. When the
+  fleet is scarce, the vulnerability ranking upstream is what points the
+  buses at the right neighborhoods.
+
 ## Architecture (five lines)
 
 1. `scenarios/<name>/` holds JSON per scenario: neighborhoods, fleet, one storm forecast, and a scenario description.
