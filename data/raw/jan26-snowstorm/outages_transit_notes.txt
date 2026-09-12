@@ -1,0 +1,15 @@
+﻿Source A: WBUR, "How the massive snowstorm is affecting Mass. schools, transit and power Monday"
+URL: https://www.wbur.org/news/2026/01/26/snow-school-closing-transportation-effects-final-totals-newsletter
+Pulled: 2026-09-12 (web fetch)
+- Snow: 16.7 in at Logan as of midnight (NOAA final: 23.2 in, see noaa_episode_209121.csv)
+- Outages: statewide fell from 2,000+ to 317 by 8 AM Jan 26 -- grid largely held
+- MBTA: Red/Orange/Blue delays; SHUTTLE BUSES REPLACING MATTAPAN TROLLEY;
+  commuter rail ~1/3 weekday schedule, delays to 1 hour; reduced ferries
+- Schools: Boston closed Jan 26
+
+Source B: Axios Boston, "Winter storm dumps over a foot of snow over Greater Boston"
+URL: https://www.axios.com/local/boston/2026/01/26/massachusetts-snowfall-storm
+Pulled: 2026-09-12 -- DIRECT FETCH FAILED (HTTP 403); details below are from the
+search-result snippet only, so treat as secondhand:
+- "At the height of the storm, hundreds of people in East Boston experienced
+  power outages for a few hours, per Eversource's outage map."

@@ -1,0 +1,28 @@
+﻿MBTA fleet + service impact sources (pulled 2026-09-12 via web fetch/search)
+
+FLEET (real anchor for the 12-bus synthetic fleet):
+- Streetsblog MA 2026-07-06:
+  https://mass.streetsblog.org/2026/07/06/while-nyc-warns-of-reliability-problems-the-t-stays-the-course-on-electric-buses
+  - 12 battery-electric buses currently in service (testing underway)
+  - 80 on order (New Flyer, $119M; options to 380)
+  - Electrified depots: North Cambridge (32-bus, opening summer 2026),
+    Quincy (120-bus, 2027)
+  => The synthetic fleet count (12 BEBs) matches the real number. Real depots
+     differ: synthetic Cabot/Arborway/Charlestown depots are NOT electrified
+     in reality; labeled synthetic in scenarios.
+
+SERVICE IMPACTS:
+- Jan 26 storm (WBUR, see jan26-snowstorm/outages_transit_notes.txt):
+  Red/Orange/Blue delays; Mattapan trolley replaced by shuttle buses;
+  commuter rail ~1/3 schedule; reduced ferries.
+- Feb 22-24 blizzard:
+  - MBTA official: https://www.mbta.com/news/2026-02-22/mbta-service-information-during-winter-storm
+  - Streetsblog MA 2026-02-23: https://mass.streetsblog.org/2026/02/23/transit-authorities-announce-cancelled-reduced-service-during-mondays-storm
+  - Somerville Times (Feb 24 service): https://www.thesomervilletimes.com/archives/146156
+  - GBH (restoration): https://www.wgbh.org/news/local/2026-02-26/eng-applauds-post-storm-restoration-we-are-not-the-same-t
+  Buses/subway on Sunday-level reduced schedules Feb 23-24; Mattapan Line
+  suspended (shuttle buses); all ferries suspended; RIDE canceled Tue;
+  full service restored two days after the storm.
+- Dec 19 2025 windstorm: no MBTA suspension found in searches; treated as a
+  minor-disruption event (wind outages, service largely normal). LABELED:
+  transit impact synthetic-assumed-normal.

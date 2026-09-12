@@ -1,0 +1,18 @@
+﻿Feb 2026 blizzard outage sources (all pulled 2026-09-12 via web fetch/search):
+
+1. CBS Boston: https://www.cbsnews.com/boston/news/power-outages-massachusetts-boston/
+   - Statewide peak 290,000; 245,000+ still out Tue 2/24 12:30 PM
+   - Eversource 230,000+, National Grid 17,000+ (Tue afternoon)
+   - Hardest hit: Southeastern MA, Cape, Islands. Restoration 72-120 hrs guidance.
+2. NBC Boston: https://www.nbcboston.com/news/local/blizzard-power-outages-massachusetts/3907094/
+   - ~7,600 still out 1 AM Friday 2/27; ~400,000 total restored by Thursday.
+3. Wikipedia "February 2026 North American blizzard":
+   https://en.wikipedia.org/wiki/February_2026_North_American_blizzard
+   - 650,000+ out across Northeast; Wellfleet gust 98 mph; Boston snow
+     emergency declared 2/22 (Mayor Wu). No Boston-specific outage counts.
+
+NEIGHBORHOOD-LEVEL DATA: none found in news or search-indexed DPU filings.
+A DPU post-storm investigation filing may exist in the DPU file room
+(eeaonline.eea.state.ma.us/DPU/Fileroom) but is not fetchable here.
+=> Per project rules, Boston neighborhood outage exposure for this event is
+   ALLOCATED from county/municipal counts by SVI weight and LABELED ESTIMATE.

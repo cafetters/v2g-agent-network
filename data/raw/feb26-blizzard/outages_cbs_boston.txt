@@ -1,0 +1,15 @@
+﻿Source: CBS Boston, "Power outages in Massachusetts leave more than 245,000 in the dark after blizzard"
+URL: https://www.cbsnews.com/boston/news/power-outages-massachusetts-boston/
+Pulled: 2026-09-12 (via web fetch; article last updated 2026-02-24 12:36 EST)
+
+Peak outage counts (as reported):
+- Statewide peak: 290,000 customers
+- Tue 2026-02-24 12:30 PM: 245,000+ without power
+- Eversource (eastern MA): 230,000+ by Tuesday afternoon
+- National Grid: 17,000+ Tuesday afternoon
+
+Geography: Southeastern MA, Cape Cod, Islands hardest hit.
+NO town/city-level numbers for Boston/Suffolk County in this source.
+
+Cause: heavy wet snow + winds (gusts 70+ mph, 83 mph Nantucket).
+Restoration: Eversource guidance 72-120 hours for hardest-hit areas.
