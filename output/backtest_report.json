@@ -1,0 +1,552 @@
+{
+  "generated": "20260912-170423",
+  "runs_per_proposer": 5,
+  "events": [
+    {
+      "scenario": "jan26-snowstorm",
+      "name": "January 2026 Snowstorm (backtest)",
+      "observed_outage_neighborhoods": [
+        "East Boston"
+      ],
+      "observed_outage_label": "sourced: Axios via search snippet (hundreds out in East Boston); statewide outages minimal (WBUR)",
+      "critical_load_kw_per_resident": 0.3,
+      "proposers": {
+        "emergency": {
+          "runs": 5,
+          "approved": 5,
+          "mean_covered_in_observed": 181.0,
+          "mean_kwh_in_observed": 418.0,
+          "total_critical_in_observed": 181,
+          "per_run": [
+            {
+              "covered_in_observed": 181,
+              "kwh_in_observed": 418,
+              "hours_by_neighborhood": {
+                "East Boston": 7.7
+              },
+              "scores": {
+                "covered": 990,
+                "kwh_per_critical": 2.62,
+                "equity_top2_share": 0.404,
+                "equity_gini": 0.623,
+                "service_stranded": 0
+              }
+            },
+            {
+              "covered_in_observed": 181,
+              "kwh_in_observed": 418,
+              "hours_by_neighborhood": {
+                "East Boston": 7.7
+              },
+              "scores": {
+                "covered": 990,
+                "kwh_per_critical": 2.62,
+                "equity_top2_share": 0.437,
+                "equity_gini": 0.615,
+                "service_stranded": 0
+              }
+            },
+            {
+              "covered_in_observed": 181,
+              "kwh_in_observed": 418,
+              "hours_by_neighborhood": {
+                "East Boston": 7.7
+              },
+              "scores": {
+                "covered": 990,
+                "kwh_per_critical": 2.62,
+                "equity_top2_share": 0.437,
+                "equity_gini": 0.617,
+                "service_stranded": 0
+              }
+            },
+            {
+              "covered_in_observed": 181,
+              "kwh_in_observed": 418,
+              "hours_by_neighborhood": {
+                "East Boston": 7.7
+              },
+              "scores": {
+                "covered": 990,
+                "kwh_per_critical": 2.62,
+                "equity_top2_share": 0.424,
+                "equity_gini": 0.618,
+                "service_stranded": 0
+              }
+            },
+            {
+              "covered_in_observed": 181,
+              "kwh_in_observed": 418,
+              "hours_by_neighborhood": {
+                "East Boston": 7.7
+              },
+              "scores": {
+                "covered": 990,
+                "kwh_per_critical": 2.62,
+                "equity_top2_share": 0.424,
+                "equity_gini": 0.618,
+                "service_stranded": 0
+              }
+            }
+          ]
+        },
+        "fleet": {
+          "runs": 5,
+          "approved": 5,
+          "mean_covered_in_observed": 181.0,
+          "mean_kwh_in_observed": 387.2,
+          "total_critical_in_observed": 181,
+          "per_run": [
+            {
+              "covered_in_observed": 181,
+              "kwh_in_observed": 374,
+              "hours_by_neighborhood": {
+                "East Boston": 6.9
+              },
+              "scores": {
+                "covered": 1221,
+                "kwh_per_critical": 2.13,
+                "equity_top2_share": 0.296,
+                "equity_gini": 0.358,
+                "service_stranded": 0
+              }
+            },
+            {
+              "covered_in_observed": 181,
+              "kwh_in_observed": 418,
+              "hours_by_neighborhood": {
+                "East Boston": 7.7
+              },
+              "scores": {
+                "covered": 1142,
+                "kwh_per_critical": 1.72,
+                "equity_top2_share": 0.403,
+                "equity_gini": 0.388,
+                "service_stranded": 0
+              }
+            },
+            {
+              "covered_in_observed": 181,
+              "kwh_in_observed": 374,
+              "hours_by_neighborhood": {
+                "East Boston": 6.9
+              },
+              "scores": {
+                "covered": 1287,
+                "kwh_per_critical": 2.02,
+                "equity_top2_share": 0.296,
+                "equity_gini": 0.383,
+                "service_stranded": 0
+              }
+            },
+            {
+              "covered_in_observed": 181,
+              "kwh_in_observed": 396,
+              "hours_by_neighborhood": {
+                "East Boston": 7.3
+              },
+              "scores": {
+                "covered": 1221,
+                "kwh_per_critical": 2.13,
+                "equity_top2_share": 0.276,
+                "equity_gini": 0.383,
+                "service_stranded": 0
+              }
+            },
+            {
+              "covered_in_observed": 181,
+              "kwh_in_observed": 374,
+              "hours_by_neighborhood": {
+                "East Boston": 6.9
+              },
+              "scores": {
+                "covered": 1221,
+                "kwh_per_critical": 2.13,
+                "equity_top2_share": 0.296,
+                "equity_gini": 0.383,
+                "service_stranded": 0
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "scenario": "feb26-blizzard",
+      "name": "February 2026 Blizzard (backtest)",
+      "observed_outage_neighborhoods": [
+        "Back Bay",
+        "Charlestown",
+        "Dorchester",
+        "East Boston",
+        "Hyde Park",
+        "Mattapan",
+        "Roxbury",
+        "South Boston"
+      ],
+      "observed_outage_label": "ESTIMATE: statewide peak 290,000 out (CBS Boston); no neighborhood counts public - exposure allocated across all neighborhoods by SVI weight",
+      "critical_load_kw_per_resident": 0.3,
+      "proposers": {
+        "emergency": {
+          "runs": 5,
+          "approved": 5,
+          "mean_covered_in_observed": 911.8,
+          "mean_kwh_in_observed": 2958.0,
+          "total_critical_in_observed": 1434,
+          "per_run": [
+            {
+              "covered_in_observed": 809,
+              "kwh_in_observed": 2958,
+              "hours_by_neighborhood": {
+                "Dorchester": 7.6,
+                "Roxbury": 17.6,
+                "Mattapan": 23.3
+              },
+              "scores": {
+                "covered": 809,
+                "kwh_per_critical": 3.66,
+                "equity_top2_share": 0.248,
+                "equity_gini": 0.659,
+                "service_stranded": 0
+              }
+            },
+            {
+              "covered_in_observed": 1142,
+              "kwh_in_observed": 2958,
+              "hours_by_neighborhood": {
+                "Mattapan": 23.5,
+                "East Boston": 7.3,
+                "Roxbury": 11.4,
+                "Dorchester": 5.1,
+                "Hyde Park": 7.9
+              },
+              "scores": {
+                "covered": 1142,
+                "kwh_per_critical": 2.59,
+                "equity_top2_share": 0.384,
+                "equity_gini": 0.471,
+                "service_stranded": 0
+              }
+            },
+            {
+              "covered_in_observed": 990,
+              "kwh_in_observed": 2958,
+              "hours_by_neighborhood": {
+                "East Boston": 7.7,
+                "Dorchester": 7.5,
+                "Roxbury": 17.2,
+                "Mattapan": 11.5
+              },
+              "scores": {
+                "covered": 990,
+                "kwh_per_critical": 2.99,
+                "equity_top2_share": 0.263,
+                "equity_gini": 0.623,
+                "service_stranded": 0
+              }
+            },
+            {
+              "covered_in_observed": 809,
+              "kwh_in_observed": 2958,
+              "hours_by_neighborhood": {
+                "Dorchester": 7.6,
+                "Roxbury": 18.7,
+                "Mattapan": 21.2
+              },
+              "scores": {
+                "covered": 809,
+                "kwh_per_critical": 3.66,
+                "equity_top2_share": 0.226,
+                "equity_gini": 0.666,
+                "service_stranded": 0
+              }
+            },
+            {
+              "covered_in_observed": 809,
+              "kwh_in_observed": 2958,
+              "hours_by_neighborhood": {
+                "Dorchester": 8.1,
+                "Roxbury": 17.5,
+                "Mattapan": 21.2
+              },
+              "scores": {
+                "covered": 809,
+                "kwh_per_critical": 3.66,
+                "equity_top2_share": 0.226,
+                "equity_gini": 0.671,
+                "service_stranded": 0
+              }
+            }
+          ]
+        },
+        "fleet": {
+          "runs": 5,
+          "approved": 5,
+          "mean_covered_in_observed": 1337.0,
+          "mean_kwh_in_observed": 2958.0,
+          "total_critical_in_observed": 1434,
+          "per_run": [
+            {
+              "covered_in_observed": 1221,
+              "kwh_in_observed": 2958,
+              "hours_by_neighborhood": {
+                "Dorchester": 5.4,
+                "Roxbury": 11.6,
+                "Mattapan": 11.9,
+                "East Boston": 5.7,
+                "Hyde Park": 8.4,
+                "Charlestown": 15.2
+              },
+              "scores": {
+                "covered": 1221,
+                "kwh_per_critical": 2.42,
+                "equity_top2_share": 0.231,
+                "equity_gini": 0.403,
+                "service_stranded": 0
+              }
+            },
+            {
+              "covered_in_observed": 1366,
+              "kwh_in_observed": 2958,
+              "hours_by_neighborhood": {
+                "Dorchester": 5.4,
+                "Roxbury": 6.4,
+                "Mattapan": 10.2,
+                "East Boston": 6.9,
+                "Hyde Park": 6.8,
+                "Charlestown": 16.2,
+                "South Boston": 8.3
+              },
+              "scores": {
+                "covered": 1366,
+                "kwh_per_critical": 2.17,
+                "equity_top2_share": 0.235,
+                "equity_gini": 0.268,
+                "service_stranded": 0
+              }
+            },
+            {
+              "covered_in_observed": 1366,
+              "kwh_in_observed": 2958,
+              "hours_by_neighborhood": {
+                "Dorchester": 5.4,
+                "Roxbury": 5.2,
+                "Mattapan": 12.6,
+                "East Boston": 6.9,
+                "Hyde Park": 6.8,
+                "Charlestown": 16.2,
+                "South Boston": 8.3
+              },
+              "scores": {
+                "covered": 1366,
+                "kwh_per_critical": 2.17,
+                "equity_top2_share": 0.26,
+                "equity_gini": 0.268,
+                "service_stranded": 0
+              }
+            },
+            {
+              "covered_in_observed": 1366,
+              "kwh_in_observed": 2958,
+              "hours_by_neighborhood": {
+                "Dorchester": 5.4,
+                "Roxbury": 5.2,
+                "Mattapan": 12.6,
+                "East Boston": 6.9,
+                "Hyde Park": 6.8,
+                "Charlestown": 16.2,
+                "South Boston": 8.3
+              },
+              "scores": {
+                "covered": 1366,
+                "kwh_per_critical": 2.17,
+                "equity_top2_share": 0.26,
+                "equity_gini": 0.268,
+                "service_stranded": 0
+              }
+            },
+            {
+              "covered_in_observed": 1366,
+              "kwh_in_observed": 2958,
+              "hours_by_neighborhood": {
+                "Dorchester": 5.4,
+                "Roxbury": 5.2,
+                "East Boston": 7.3,
+                "Mattapan": 9.8,
+                "Hyde Park": 8.4,
+                "Charlestown": 15.8,
+                "South Boston": 8.3
+              },
+              "scores": {
+                "covered": 1366,
+                "kwh_per_critical": 2.17,
+                "equity_top2_share": 0.238,
+                "equity_gini": 0.268,
+                "service_stranded": 0
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "scenario": "dec25-windstorm",
+      "name": "December 2025 Windstorm (backtest)",
+      "observed_outage_neighborhoods": [
+        "Charlestown",
+        "East Boston",
+        "South Boston"
+      ],
+      "observed_outage_label": "ESTIMATE: wind event, gust 64 mph at Logan (NOAA episode 208283); coastal exposure assumed, no neighborhood outage data found",
+      "critical_load_kw_per_resident": 0.3,
+      "proposers": {
+        "emergency": {
+          "runs": 5,
+          "approved": 5,
+          "mean_covered_in_observed": 144.8,
+          "mean_kwh_in_observed": 334.4,
+          "total_critical_in_observed": 405,
+          "per_run": [
+            {
+              "covered_in_observed": 181,
+              "kwh_in_observed": 418,
+              "hours_by_neighborhood": {
+                "East Boston": 7.7
+              },
+              "scores": {
+                "covered": 492,
+                "kwh_per_critical": 3.01,
+                "equity_top2_share": 0.54,
+                "equity_gini": 0.675,
+                "service_stranded": 0
+              }
+            },
+            {
+              "covered_in_observed": 181,
+              "kwh_in_observed": 418,
+              "hours_by_neighborhood": {
+                "East Boston": 7.7
+              },
+              "scores": {
+                "covered": 387,
+                "kwh_per_critical": 3.83,
+                "equity_top2_share": 0.282,
+                "equity_gini": 0.805,
+                "service_stranded": 0
+              }
+            },
+            {
+              "covered_in_observed": 0,
+              "kwh_in_observed": 0,
+              "hours_by_neighborhood": {},
+              "scores": {
+                "covered": 704,
+                "kwh_per_critical": 2.11,
+                "equity_top2_share": 0.0,
+                "equity_gini": 0.759,
+                "service_stranded": 0
+              }
+            },
+            {
+              "covered_in_observed": 181,
+              "kwh_in_observed": 418,
+              "hours_by_neighborhood": {
+                "East Boston": 7.7
+              },
+              "scores": {
+                "covered": 492,
+                "kwh_per_critical": 3.01,
+                "equity_top2_share": 0.742,
+                "equity_gini": 0.675,
+                "service_stranded": 0
+              }
+            },
+            {
+              "covered_in_observed": 181,
+              "kwh_in_observed": 418,
+              "hours_by_neighborhood": {
+                "East Boston": 7.7
+              },
+              "scores": {
+                "covered": 679,
+                "kwh_per_critical": 2.18,
+                "equity_top2_share": 0.282,
+                "equity_gini": 0.805,
+                "service_stranded": 0
+              }
+            }
+          ]
+        },
+        "fleet": {
+          "runs": 5,
+          "approved": 5,
+          "mean_covered_in_observed": 0.0,
+          "mean_kwh_in_observed": 0.0,
+          "total_critical_in_observed": 405,
+          "per_run": [
+            {
+              "covered_in_observed": 0,
+              "kwh_in_observed": 0,
+              "hours_by_neighborhood": {},
+              "scores": {
+                "covered": 809,
+                "kwh_per_critical": 1.83,
+                "equity_top2_share": 0.208,
+                "equity_gini": 0.707,
+                "service_stranded": 0
+              }
+            },
+            {
+              "covered_in_observed": 0,
+              "kwh_in_observed": 0,
+              "hours_by_neighborhood": {},
+              "scores": {
+                "covered": 809,
+                "kwh_per_critical": 1.83,
+                "equity_top2_share": 0.208,
+                "equity_gini": 0.707,
+                "service_stranded": 0
+              }
+            },
+            {
+              "covered_in_observed": 0,
+              "kwh_in_observed": 0,
+              "hours_by_neighborhood": {},
+              "scores": {
+                "covered": 809,
+                "kwh_per_critical": 1.83,
+                "equity_top2_share": 0.208,
+                "equity_gini": 0.707,
+                "service_stranded": 0
+              }
+            },
+            {
+              "covered_in_observed": 0,
+              "kwh_in_observed": 0,
+              "hours_by_neighborhood": {},
+              "scores": {
+                "covered": 809,
+                "kwh_per_critical": 1.83,
+                "equity_top2_share": 0.208,
+                "equity_gini": 0.707,
+                "service_stranded": 0
+              }
+            },
+            {
+              "covered_in_observed": 0,
+              "kwh_in_observed": 0,
+              "hours_by_neighborhood": {},
+              "scores": {
+                "covered": 809,
+                "kwh_per_critical": 1.83,
+                "equity_top2_share": 0.258,
+                "equity_gini": 0.707,
+                "service_stranded": 0
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

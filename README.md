@@ -77,9 +77,9 @@ negotiation converged to the same plan in 9 of 10 runs.
 
 These runs used the older LLM-gated Utility verdict (before the approve/reject
 decision moved into code), so they are not directly comparable to later
-results; a like-with-like rerun on the current code is planned. The fleet
-half was truncated at 3 of 10 runs when the API credit balance ran out
-mid-batch — treat it as suggestive, not conclusive.
+results; the like-with-like rerun on the current code appears in the next
+section. The fleet half was truncated at 3 of 10 runs when the API credit
+balance ran out mid-batch — treat it as suggestive, not conclusive.
 
 ```
 proposer=emergency (n=10): Approved 10/10 | mean rounds 2.5 | mean kWh 2597
@@ -175,13 +175,19 @@ partly because approval is now computed in code.
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-pip install anthropic python-dotenv
+pip install -r requirements.txt
 # put ANTHROPIC_API_KEY=sk-ant-... in .env
 python orchestrator.py
 ```
 
-The round-by-round trace prints to the console; the final plan is written to
-`output/staging_plan.json`.
+Requires Python 3.10+. The round-by-round trace prints to the console; the
+final plan is written to `output/staging_plan.json`. Useful variants:
+`--runs 10` for a batch with a summary table, `--proposer fleet|both` to
+reverse or compare proposal order, `--scenario <name>` to pick a scenario,
+`--replay logs/<file>.jsonl` to reprint any past run's trace with no API
+calls, and `python scripts/backtest.py` for the real-storm backtest.
+`python scripts/selfcheck.py` runs the offline invariant tests (guards,
+verdict math, scoring) without touching the API.
 
 ## Scenarios
 
@@ -196,6 +202,12 @@ work with any scenario, and the summary table prints the scenario name.
 | `baseline-noreaster` | — (original synthetic data) | One weak tie-in (East Boston) vs top vulnerability rank |
 | `fleet-scarce` | Half the fleet in maintenance or under 30% charge | Fleet exhaustion: 4 eligible buses for 5+ zones |
 | `grid-scarce` | Every tie-in cut to 60 kW (one bus per site) | The capacity cap everywhere; pure breadth allocation |
+| `boston-heatwave` | Heat-weighted vulnerability, 7 buses on routes | Route-stranding pushback under scarcity |
+| `jan26-snowstorm`, `feb26-blizzard`, `dec25-windstorm` | Real event data (see below) | Backtest against last winter's storms |
+
+The backtest and heat wave scenarios are generated from sourced data by
+`scripts/build_event_scenarios.py` and `scripts/build_heatwave_scenario.py` —
+edit and re-run those rather than hand-editing their JSON.
 
 To add a scenario: create `scenarios/<name>/` with the same four files
 (`scenario.json` needs `name`, `description`, `stresses`; the other three
@@ -274,18 +286,18 @@ by the `service_stranded` score, never by the negotiation itself.
 
 ## Architecture (five lines)
 
-1. `scenarios/<name>/` holds JSON per scenario: neighborhoods, fleet, one storm forecast, and a scenario description.
-2. Each agent in `agents/` is a class with a role system prompt and one decision tool; `tool_choice` forces a structured response.
-3. `orchestrator.py` loops: Emergency proposes -> Fleet allocates -> Utility validates.
-4. Rejections are serialized and fed back into the next round's prompts, and a deterministic guard drops duplicate bus assignments.
-5. On approval (or round limit) the orchestrator computes kWh and coverage in plain Python and writes `output/staging_plan.json`.
+1. `scenarios/<name>/` holds JSON per scenario: neighborhoods, fleet, one storm forecast, and a scenario description; the backtest and heat wave scenarios are generated from sourced data in `data/raw/`.
+2. Each agent in `agents/` is a class with a role system prompt and one strict decision tool; `tool_choice` forces a schema-conforming response, and static context is prompt-cached.
+3. `orchestrator.py` runs up to four rounds — Emergency proposes, Fleet allocates, Utility validates (or Fleet proposes first with `--proposer fleet`) — feeding every rejection back as structured reasons.
+4. Deterministic guards enforce what models kept breaking: duplicates, phantom entries, repeated-failure caps, and the approve/reject verdict itself, computed from tie-in capacities with the model's text kept as reasoning.
+5. Every run writes a JSONL trace to `logs/` (replayable offline) and a scored `output/staging_plan.json`; batches print score summaries with token cost.
 
 ## Known limitations and what I'd build next
 
 - Agents are stateless between rounds; feedback is passed as text, not conversation history. Next: give each agent a running conversation so it remembers its own commitments.
-- The utility's capacity arithmetic is done by the model; only the duplicate check is enforced in code. Next: recheck kW-vs-tie-in deterministically and let the model handle judgment calls only.
-- No travel time, charging logistics, weather uncertainty, or cost modeling; data is synthetic and small. Next: real MBTA depot locations and a proper dispatch cost function.
-- Convergence within 4 rounds is likely but not guaranteed; on failure the last unapproved allocation is written with a warning.
+- The Fleet agent's own rules — the 50% charge floor and never-strand-service — are still prompt-only: scoring catches violations (it staged a 20%-charge bus once, and stranded a route twice in the heat wave) but nothing prevents them. Next: enforce both in `apply_guards`, the same move as the other five fixes.
+- No travel time, charging logistics, weather uncertainty, or cost modeling. The backtest scenarios use real storm, SVI, and fleet-size data, but tie-in capacities are synthetic (distribution-level interconnection data is not public) and neighborhood outage exposure is estimated where no source exists — labels in `data/SOURCES.md`. Next: real depot locations and a dispatch cost function.
+- Convergence within 4 rounds is not guaranteed; a failed negotiation writes the plan with `"status": "unapproved"` and the utility's last rejection attached, and the summary counts it separately.
 
 ---
 
