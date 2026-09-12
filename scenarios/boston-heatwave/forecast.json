@@ -1,0 +1,18 @@
+{
+  "storm_name": "Multi-Day July Heat Dome (synthetic event)",
+  "arrival_time": "2026-07-20T12:00:00-04:00",
+  "sustained_wind_mph": 5,
+  "gust_mph": 10,
+  "heat_index_f": 105,
+  "duration_days": 3,
+  "expected_outage_probability": {
+    "East Boston": 0.45,
+    "Dorchester": 0.47,
+    "Mattapan": 0.46,
+    "Roxbury": 0.5,
+    "Charlestown": 0.41,
+    "South Boston": 0.41,
+    "Hyde Park": 0.42,
+    "Back Bay": 0.41
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Boston Heat Wave",
+  "description": "A synthetic three-day heat dome with heat index near 105F. Vulnerability is weighted toward elderly residents without air conditioning, proxied from real CDC SVI 2022 age-65+ and poverty fields. Outage risk comes from grid load, not wind, so it is broad and moderate rather than concentrated. The full fleet is in weekday daytime service: seven of twelve buses are on routes, so any ambitious staging plan pressures the Fleet agent to strand service.",
+  "stresses": "Route-stranding pushback: only two eligible idle buses exist, so the negotiation tests whether the Fleet agent holds its never-strand-service rule under pressure.",
+  "estimates": "heat-critical residents = age65 x poverty rate (no-AC proxy, ESTIMATE); heat vulnerability = weighted age/poverty shares (ESTIMATE); outage risk = load-stress estimate; tie-ins + fleet status SYNTHETIC"
+}
