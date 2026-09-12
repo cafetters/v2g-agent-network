@@ -7,6 +7,8 @@ from itertools import zip_longest
 
 from dotenv import load_dotenv
 
+from scoring import score_plan
+
 load_dotenv()
 
 MAX_ROUNDS = 4
@@ -251,6 +253,20 @@ def summarize_lines(results, neighborhoods, title):
     lines.append(f"tokens: {tok['input']} uncached-in / {tok['cache_write']} "
                  f"cache-write / {tok['cache_read']} cache-read / "
                  f"{tok['output']} out | est cost ${cost:.2f}")
+    scored = [r["scores"] for r in approved if "scores" in r]
+    if scored:
+        def mr(key, fmt="{:.2f}"):
+            vals = [s[key] for s in scored]
+            mean = sum(vals) / len(vals)
+            return (fmt.format(mean) + " ("
+                    + fmt.format(min(vals)) + "-" + fmt.format(max(vals)) + ")")
+        lines.append(
+            "scores (mean, min-max over approved runs): "
+            f"covered {mr('covered', '{:.0f}')} | "
+            f"kWh/crit {mr('kwh_per_critical')} | "
+            f"top2-share {mr('equity_top2_share')} | "
+            f"gini {mr('equity_gini')} | "
+            f"stranded {mr('service_stranded', '{:.0f}')}")
     if not n_app:
         lines.append("No approved runs; skipping per-neighborhood table.")
         return lines
@@ -311,9 +327,11 @@ def run_batch(runs, proposer, agents, data, stamp, scenario):
             "approved" if approved else "unapproved",
             None if approved else verdict)
         plan["scenario"] = scenario
+        plan["scores"] = scores = score_plan(plan, neighborhoods, fleet)
         results.append({
             "rounds": rounds, "approved": approved, "rejected_r1": rejected_r1,
             "verdict_disagreements": disagreements, "tokens": tokens,
+            "scores": scores,
             "total_kwh": plan["total_kwh_staged"],
             "per_hood": {s["neighborhood"]: {
                 "kwh": s["kwh_available"], "covered": s["critical_residents_covered"],
@@ -322,7 +340,10 @@ def run_batch(runs, proposer, agents, data, stamp, scenario):
         total_in = tokens["input"] + tokens["cache_read"] + tokens["cache_write"]
         print(f"[{proposer}] run {i + 1}/{runs}: "
               f"{'approved' if approved else 'UNAPPROVED'} in {rounds} round(s), "
-              f"{plan['total_kwh_staged']} kWh staged, "
+              f"cov {scores['covered']}, {scores['kwh_per_critical']} kWh/crit, "
+              f"top2 {scores['equity_top2_share']:.0%}, "
+              f"gini {scores['equity_gini']}, "
+              f"stranded {scores['service_stranded']}, "
               f"{disagreements} verdict disagreement(s), "
               f"tokens {total_in} in ({tokens['cache_read']} cached) / "
               f"{tokens['output']} out")

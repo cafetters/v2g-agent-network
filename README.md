@@ -143,11 +143,25 @@ South Boston          7       7       38       11    10%            9
 Back Bay              8       8        0        0     0%           10
 ```
 
-The pattern from the truncated run holds at full sample: emergency-first
-concentrates depth on the top four vulnerability ranks and abandons the rest;
-fleet-first serves six or seven sites but drops East Boston to coverage rank
-five. Fleet-first converges faster (1.2 rounds vs 2.0) because single-bus
-spreads are grid-compliant from the start.
+Scored with `scoring.score_plan()` (mean, min-max over the 10 approved runs
+per proposer):
+
+```
+                      emergency-first          fleet-first
+covered residents     870 (870-870)            1088 (960-1120)
+kWh per critical      2.99 (2.99-2.99)         2.35 (2.31-2.36)
+top-2 equity share    0.58 (0.47-0.61)         0.45 (0.44-0.51)
+kWh Gini              0.61 (0.56-0.64)         0.39 (0.38-0.50)
+service stranded      0                        0
+```
+
+The scores state the trade-off exactly: fleet-first covers 218 more critical
+residents with a much more even spread (Gini 0.39 vs 0.61), while
+emergency-first buys depth where vulnerability is highest — 27% more kWh per
+critical resident, and 58% of staged energy in the top two vulnerability
+ranks versus 45%. Neither ordering strands service. Fleet-first also
+converges faster (1.2 rounds vs 2.0) because single-bus spreads are
+grid-compliant from the start.
 
 One caveat found in the logs: in 9 of 10 fleet-first runs the utility model
 returned `approved: false` while its own per-site analysis found no
